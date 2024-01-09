@@ -1,1 +1,1 @@
-# alu-scripting
+Author: Lydia Ojoawo
