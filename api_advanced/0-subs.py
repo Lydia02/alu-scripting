@@ -1,17 +1,36 @@
 #!/usr/bin/python3
-"""Return the number of subscribers of a given subreddit"""
+"""
+Contains the number_of_subscribers function
+"""
 
-import requests
-
+import urllib.request
+import json
 
 def number_of_subscribers(subreddit):
-    """function that fetches number_of_subscribers"""
-    URL = "https://www.reddit.com/r/{}/about.json".format(subreddit)
-    HEADERS = {"User-Agent": "PostmanRuntime/7.35.0"}
+    """Returns the number of subscribers for a given subreddit."""
+    if subreddit is None or type(subreddit) is not str:
+        return 0
+    
+    url = 'http://www.reddit.com/r/{}/about.json'.format(subreddit)
+    headers = {'User-Agent': 'Python/urllib:APIproject:v1.0.0 (by /u/aaorrico23)'}
+
+    # Construct a request with custom headers
+    req = urllib.request.Request(url, headers=headers)
 
     try:
-        RESPONSE = requests.get(URL, headers=HEADERS, allow_redirects=False)
-        return RESPONSE.json().get("data").get("subscribers")
-
-    except Exception:
+        # Open the URL and read the response
+        with urllib.request.urlopen(req) as response:
+            body = response.read()
+        
+        # Parse the JSON response
+        r = json.loads(body)
+        subs = r.get("data", {}).get("subscribers", 0)
+        return subs
+    except Exception as e:
+        print("An error occurred: {}".format(e))
         return 0
+
+# Example usage (uncomment for testing)
+# subreddit = "python"
+# print(number_of_subscribers(subreddit))
+
